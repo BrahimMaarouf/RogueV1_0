@@ -237,14 +237,6 @@ def handle_cd(args):
     except Exception as e:
         print(f"Error: {e}")
 
-def isItAFile(filename):
-    if os.path.isfile(filename):
-        return True
-    else:
-        print(Fore.RED + f"Warning: {filename} is not a file or does not exist.")
-        return False
-
-
 
 def isItAFile(filename):
     if os.path.isfile(filename):
