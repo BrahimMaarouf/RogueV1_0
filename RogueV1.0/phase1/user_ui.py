@@ -2,50 +2,88 @@ import os
 import sys
 import time
 from colorama import init, Fore
-from phase2.file_management import handle_cp, handle_mv, handle_rm, list_directory_contents
+import phase2.file_management
 
-# Initialize colorama
+
 init(autoreset=True)
 
-# Paths to important files
-banner_file = os.path.join("phase1", "banner.txt")  # Ensure correct path to banner.txt
+
+banner_file = os.path.join("phase1", "banner.txt")  
 
 # Custom color
-VS_CODE_RED = "\033[38;5;196m"  # Bright red similar to VS Code
+VS_CODE_RED = "\033[38;5;196m"  
 
 # Commands help text dictionary (more detailed)
 COMMANDS_HELP = {
-    "ls": "Usage: ls [-l] [-a]\n\nList directory contents. Use -l for long listing format and -a for including hidden files.",
-    "cp": "Usage: cp [source] [destination]\n\nCopy files from source to destination. Use -i for interactive mode, and -v for verbose output.",
-    "mv": "Usage: mv [source] [destination]\n\nMove files from source to destination. Use -i for interactive mode, and -v for verbose output.",
-    "rm": "Usage: rm [-r] [-f] [file/directory]\n\nRemove a file or directory. Use -r for recursive removal and -f for forced removal.",
+    "ls": "NAME\n    ls - List directory contents.\n\nSYNOPSIS\n    ls [-l] [-a]\n\nDESCRIPTION\n    -l: Long listing format.\n    -a: Include hidden files.",
+    "cp": "NAME\n    cp - Copy files and directories.\n\nSYNOPSIS\n    cp [source] [destination]\n\nDESCRIPTION\n    -i: Interactive mode (prompt before overwrite).\n    -v: Verbose mode (show what is being done).",
+    "mv": "NAME\n    mv - Move or rename files.\n\nSYNOPSIS\n    mv [source] [destination]\n\nDESCRIPTION\n    -i: Interactive mode (prompt before overwrite).\n    -v: Verbose mode (show what is being done).",
+    "rm": "NAME\n    rm - Remove files or directories.\n\nSYNOPSIS\n    rm [-r] [-f] [file/directory]\n\nDESCRIPTION\n    -r: Recursive removal.\n    -f: Forced removal (no prompts).",
+    "cat": "NAME\n    cat - Display or concatenate file contents.\n\nSYNOPSIS\n    cat [file1] [file2] ... [> or >>] [target_file]\n\nDESCRIPTION\n    View or concatenate file contents.",
 }
 
 # Detailed man pages
 COMMANDS_MANUAL = {
-    "ls": """ls - List directory contents
+    "ls": """NAME
+    ls - List directory contents.
+
+SYNOPSIS
+    ls [-l] [-a]
+
+DESCRIPTION
+    The `ls` command displays the contents of the current directory.
     Options:
-    -l: Long listing format
-    -a: Show all files, including hidden ones
-    """,
-    "cp": """cp - Copy files and directories
-    Usage: cp [source] [destination]
+      -l   Long listing format, showing file details.
+      -a   Include hidden files, which start with a dot (.) in their names.""",
+
+    "cp": """NAME
+    cp - Copy files and directories.
+
+SYNOPSIS
+    cp [source] [destination]
+
+DESCRIPTION
+    The `cp` command copies files or directories from a source to a destination.
     Options:
-    -i: Interactive mode (prompt before overwrite)
-    -v: Verbose mode (show what is being done)
-    """,
-    "mv": """mv - Move or rename files
-    Usage: mv [source] [destination]
+      -i   Interactive mode (prompt before overwrite).
+      -v   Verbose mode (display details of the copying process).""",
+
+    "mv": """NAME
+    mv - Move or rename files.
+
+SYNOPSIS
+    mv [source] [destination]
+
+DESCRIPTION
+    The `mv` command moves or renames files and directories.
     Options:
-    -i: Interactive mode (prompt before overwrite)
-    -v: Verbose mode (show what is being done)
-    """,
-    "rm": """rm - Remove files or directories
-    Usage: rm [-r] [-f] [file/directory]
+      -i   Interactive mode (prompt before overwrite).
+      -v   Verbose mode (display details of the moving process).""",
+
+    "rm": """NAME
+    rm - Remove files or directories.
+
+SYNOPSIS
+    rm [-r] [-f] [file/directory]
+
+DESCRIPTION
+    The `rm` command removes files or directories.
     Options:
-    -r: Remove directories recursively
-    -f: Force removal (no prompts)
-    """
+      -r   Recursive mode to remove directories and their contents.
+      -f   Force mode to bypass confirmation prompts.""",
+
+    "cat": """NAME
+    cat - Display or concatenate file contents.
+
+SYNOPSIS
+    cat [file1] [file2] ... [> or >>] [target_file]
+
+DESCRIPTION
+    The `cat` command is used to view or concatenate file contents. It can read multiple files and output them to the terminal or redirect to a file.
+    Options:
+      file1, file2 ...         Specify one or more source files.
+      >                        Overwrite the target file with the contents.
+      >>                       Append the contents to the target file.""",
 }
 
 def display_banner():
@@ -57,16 +95,14 @@ def display_banner():
         print(VS_CODE_RED + "Banner file 'banner.txt' not found!")
 
 def display_prompt():
-    """Displays a custom Linux-like terminal prompt."""
     user = os.getlogin()
     machine = "localhost"
     current_path = os.getcwd()
     dir_name = current_path.split(os.sep)[-1]
     print(f"{Fore.GREEN}{user}@{machine}:{Fore.CYAN}{current_path}\\{Fore.RED}{dir_name}$", end =" ")
 
-from phase2.file_management import handle_cp, handle_mv, handle_rm, list_directory_contents, handle_cd
 
-# Your other imports and code remain the same...
+
 
 def process_command(command):
     """Process the entered command with options."""
@@ -74,15 +110,15 @@ def process_command(command):
     cmd = parts[0].lower() if parts else ""
     args = parts[1:] if len(parts) > 1 else []
 
-    # Check for `--help` or `man`
-    if "--help" in args:
+
+    if "--help" in args:  # Check for `--help` 
         print(Fore.WHITE + COMMANDS_HELP.get(cmd, f"No help available for '{cmd}'"))
-    elif cmd == "man" and args:
+    elif cmd == "man" and args: # Check for `man` 
         show_manual(args[0])
     elif cmd == "ls":
-        list_directory_contents(parts)
+        phase2.file_management.list_directory_contents(parts)
     elif cmd == "cd":
-        handle_cd(args)
+        phase2.file_management.handle_cd(args)
     elif cmd == "clear":
         os.system('cls' if os.name == 'nt' else 'clear')
     elif cmd == "exit":
@@ -90,30 +126,30 @@ def process_command(command):
         time.sleep(1)
         sys.exit(0)
     elif cmd == "cp":
-        handle_cp(parts)
+        phase2.file_management.handle_cp(parts)
     elif cmd == "mv":
-        handle_mv(parts)
+        phase2.file_management.handle_mv(parts)
     elif cmd == "rm":
-        handle_rm(parts)
+        phase2.file_management.handle_rm(parts)
+    elif cmd == "cat":
+        phase2.file_management.handle_cat(parts)
     else:
         print(Fore.WHITE + f"Command '{command}' not found.")
 
 
 def show_manual(command):
-    """Display command manual information."""
+
     manual_text = COMMANDS_MANUAL.get(command, f"No manual entry for '{command}'")
     print(Fore.WHITE + manual_text)
 
 def run_terminal():
-    """Run the terminal loop for the entire process."""
+
     display_banner()
 
     while True:
-        # Display the custom prompt
+    
         display_prompt()
 
-        # Capture user input
         command = input().strip()
 
-        # Process the entered command
         process_command(command)
