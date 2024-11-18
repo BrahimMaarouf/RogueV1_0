@@ -293,7 +293,7 @@ def handle_cat(parts):
         if compteur2 == 1:  
             target = args[compteur]
 
-            if overwrite:  
+            if overwrite:  #delete & create file output
                 if os.path.exists(target):
                     os.remove(target)
 
@@ -308,7 +308,7 @@ def handle_cat(parts):
                         except Exception as e:
                             print(Fore.RED + f"Error copying from {source} to {target}: {e}")
 
-            elif txtAppend:  
+            elif txtAppend:  #add to the end of target file
                 for i in range(compteur):
                     source = args[i]
                     if isItAFile(source):
