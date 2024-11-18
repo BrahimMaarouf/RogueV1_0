@@ -110,7 +110,8 @@ def process_command(command):
     cmd = parts[0].lower() if parts else ""
     args = parts[1:] if len(parts) > 1 else []
 
-
+    #why define args and not using the variable
+    #use it instead of parts in function in phase2.file_management
     if "--help" in args:  # Check for `--help` 
         print(Fore.WHITE + COMMANDS_HELP.get(cmd, f"No help available for '{cmd}'"))
     elif cmd == "man" and args: # Check for `man` 
