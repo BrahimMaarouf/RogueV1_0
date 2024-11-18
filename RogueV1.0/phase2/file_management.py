@@ -245,7 +245,7 @@ def isItAFile(filename):
         print(Fore.RED + f"Warning: {filename} is a directory.")
         return False
     else:
-        print(Fore.RED + f"Warning: {filename} dosent exist.")
+        print(Fore.RED + f"Warning: {filename} is not file or dir.")
         return False
 
 def handle_cat(parts):
